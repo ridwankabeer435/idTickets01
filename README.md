@@ -1,2 +1,3 @@
-# idTickets01
-Simple Issues ticketing management app that can be used by various departments within an organization
+# idTickets
+
+A simple ticketing web app built using .NET core with a ReactJS-based user interface.

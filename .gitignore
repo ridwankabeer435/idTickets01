@@ -1,0 +1,10 @@
+# Node artifact files
+node_modules/
+
+# C-sharp executable
+*.exe
+
+# .net object files
+obj/
+
+*.suo
