@@ -4,7 +4,9 @@ node_modules/
 # C-sharp executable
 *.exe
 
-# .net object files
+# .net object files and g
 obj/
+bin/
+TestStore/
 
 *.suo
