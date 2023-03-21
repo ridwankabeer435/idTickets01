@@ -5,6 +5,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
 import  Navbar from './components/Navbar';
 import './App.css';
+import Table  from './components/Table';
 
 /*
   import the navbar
@@ -21,8 +22,12 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+     
       <Navbar title="Id Tickets" />
-   
+      
+      <Table />
+      
+ 
     </ThemeProvider>
   );
 }
