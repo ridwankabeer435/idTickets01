@@ -3,9 +3,10 @@ import logo from './logo.svg';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { orange } from '@mui/material/colors';
-import  Navbar from './components/Navbar';
+import { BrowserRouter } from 'react-router-dom';
+import Home from './pages/Home';
 import './App.css';
-import Table  from './components/Table';
+
 
 /*
   import the navbar
@@ -21,12 +22,13 @@ function App() {
   
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
+       <BrowserRouter >
+       <CssBaseline />
      
-      <Navbar title="Id Tickets" />
-      
-      <Table />
-      
+        <Home />
+     
+       </BrowserRouter>
+
  
     </ThemeProvider>
   );
