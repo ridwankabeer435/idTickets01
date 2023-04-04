@@ -8,46 +8,40 @@ using System.Threading.Tasks;
 
 namespace idTicketsInfrastructure.Models
 {
-    [Table("Users")]
+
     public class User
     {
 
-        [Key]
-        [Column("Id")]
+        [Column("id")]
         public int userId { get; set; }
 
-        [Column("First_Name")]
+        [Column("first_name")]
         public string? firstName { get; set; }
 
-        [Column("Middle_Name")]
-        public string? MiddleName { get; set; }
-        
-        [Column("Last_Name")]
+
+        [Column("last_name")]
         public string? lastName { get; set; }
 
-        [Column("Email")]
+        [Column("email")]
         public string? email { get; set; } // will need to add email pattern to format email
 
 
-        [Column("Username")]
-        public string? username { get; set; } // a custom username based on 'formal' names and random number
+        [Column("created_at")]
+        public DateTime dateCreated { get; set; }
 
-        [Column("Password")]
-        public string? password { get; set; } // apply rules based on regex pattern
 
-        [Column("Phone_Number")]
-        public string? phoneNumber { get; set; }
+        [Column("updated_at")]
+        public DateTime dateUpdated { get; set; }
         
-        [Column("EmpNumber")]
-        public string? userNumber { get; set; }
+        [Column("is_it")]
+        public bool isITPersonnel { get; set; }
 
-        [Column("CurrentEmployee")]
-        public bool currentEmployee { get; set; }
+        [Column("is_supervisor")]
+        public bool isSupervisor { get; set; }
 
-        [Column("Role")]
-        public string? userRole { get; set; }
+        [Column("department_id")]
+        public long departmentId { get; set; }
 
-        [Column("Last_updated")]
-        public DateTime? lastUpdated { get; set; }
+
     }
 }

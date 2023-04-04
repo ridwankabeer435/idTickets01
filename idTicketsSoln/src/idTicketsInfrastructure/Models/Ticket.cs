@@ -8,46 +8,43 @@ using System.Threading.Tasks;
 
 namespace idTicketsInfrastructure.Models
 {
-    [Table("Tickets")]
+  
     public class Ticket
     {
         // many users can have one ticket
-        [Key]
-        [Column("Id")]
+       
+        [Column("id")]
         public int ticketId { get; set; }
-        
-        [Column("Number")]
-        public int ticketNumber { get; set; } // this shall be generated in a later method
 
-        [Column("Description")]
-        public string? description { get; set; }
 
-        [Column("Related_Tickets")]
-        public List<int>? relatedTickets { get; set; } // really this should be stringified 
+        [Column("title")]
+        public string? title { get; set; }
 
-        [ForeignKey("Users")]
-        [Column("Issuer_Id")]
-        public int issuerId { get; set; }
 
-        public User? issuerDetails { get; set; }
+        [Column("description")]
+        public string? details{ get; set; }
 
-        [Column("Assignee_Id")]
-        public int assigneeId { get; set; }
-        public User? assigneeDetails { get; set; }
 
-        [Column("Status")]
+        [Column("requestor_id")]
+        public long requestorId { get; set; }
+
+
+        [Column("assignee_id")]
+        public long assigneeId { get; set; }
+
+
+        [Column("status")]
         public string? ticketStatus { get; set; }
 
-        [Column("Priority")]
+        [Column("priority")]
         public string? ticketPriority { get; set; }
 
-        [Column("Blocked")]
-        public bool isBlocked { get ; set; }
 
-        [Column("Issue_Date")]
+        [Column("created_at")]
         public DateTime? ticketIssueDate { get; set; }
 
-        [Column("Update_Date")]
+
+        [Column("updated_at")]
         public DateTime? ticketUpdateDate { get; set; }
     }
 }
