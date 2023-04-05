@@ -10,7 +10,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace idTicketsInfrastructure.Repository
 {
-    class TicketRepository : IRepository<Ticket>
+    public class TicketRepository : IRepository<Ticket>
     {
         private readonly IDbConnectionFactory _dbConnectionFactory;
 

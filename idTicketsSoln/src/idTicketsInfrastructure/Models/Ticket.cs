@@ -34,10 +34,10 @@ namespace idTicketsInfrastructure.Models
 
 
         [Column("status")]
-        public string? ticketStatus { get; set; }
+        public Status ticketStatus { get; set; }
 
         [Column("priority")]
-        public string? ticketPriority { get; set; }
+        public Priority ticketPriority { get; set; }
 
 
         [Column("created_at")]

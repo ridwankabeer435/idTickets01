@@ -54,7 +54,14 @@ namespace idTicketsInfrastructure.Test
         public async void addNewTicket()
         {
             //have an existing list of tickets
+            Ticket newTicketItem = DataGenerator.sampleExtraTicket;
+            
+
+
+        
         }
+
+
       
     }
 }

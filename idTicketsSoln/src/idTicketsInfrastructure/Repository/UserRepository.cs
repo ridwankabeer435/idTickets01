@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace idTicketsInfrastructure.Repository
 {
    
-    class UserRepository: IRepository<User>
+    public class UserRepository: IRepository<User>
     {
         private readonly IDbConnectionFactory _dbConnectionFactory;
 

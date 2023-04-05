@@ -13,6 +13,8 @@ namespace idTicketsInfrastructure.Test
     internal static class DataGenerator
     {
         public static List<Ticket> sampleTickets { get; }
+        public static Ticket sampleExtraTicket { get; }
+
         public static List<User> sampleUsers { get; }
         public static List<Comment> sampleComments { get; }
 
@@ -31,6 +33,8 @@ namespace idTicketsInfrastructure.Test
             generateUsers();
             generateComments();
             sampleTickets = fakeTicketItem.GenerateBetween(10, 150);
+            sampleExtraTicket = fakeTicketItem.Generate();
+
             sampleUsers = fakeUserItem.GenerateBetween(1, 50);
             sampleComments = fakeCommentItem.GenerateBetween(1, 100);
         }
