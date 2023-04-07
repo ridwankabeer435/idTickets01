@@ -42,11 +42,11 @@ namespace idTicketsInfrastructure.Repository
             }
         }
 
-        public async Task<Comment> getById(int id)
+        public async Task<Comment> getById(int itemId)
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                Comment commenttItem = await connection.QueryFirstOrDefaultAsync<Comment>("SELECT * FROM comments WHERE id = @id", new { id });
+                Comment commenttItem = await connection.QueryFirstOrDefaultAsync<Comment>("SELECT * FROM comments WHERE id = @itemId", new { itemId });
                 return commenttItem;
             }
         }

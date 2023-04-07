@@ -11,35 +11,35 @@ namespace idTicketsInfrastructure.Models
 
     public class User
     {
-
+        [Key]
         [Column("id")]
-        public int userId { get; set; }
+        public int id { get; set; }
 
-        [Column("first_name")]
+        [Column("firstName")]
         public string? firstName { get; set; }
 
 
-        [Column("last_name")]
+        [Column("lastName")]
         public string? lastName { get; set; }
 
         [Column("email")]
         public string? email { get; set; } // will need to add email pattern to format email
 
 
-        [Column("created_at")]
-        public DateTime dateCreated { get; set; }
+        [Column("creationDate")]
+        public DateTime creationDate { get; set; }
 
 
-        [Column("updated_at")]
-        public DateTime dateUpdated { get; set; }
+        [Column("updateDate")]
+        public DateTime updateDate { get; set; }
         
-        [Column("is_it")]
-        public bool isITPersonnel { get; set; }
+        [Column("isITStaff")]
+        public bool isITStaff { get; set; }
 
-        [Column("is_supervisor")]
+        [Column("isSupervisor")]
         public bool isSupervisor { get; set; }
 
-        [Column("department_id")]
+        [Column("departmentId")]
         public long departmentId { get; set; }
 
 

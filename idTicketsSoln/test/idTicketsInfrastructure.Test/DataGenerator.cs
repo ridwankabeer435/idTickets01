@@ -34,6 +34,7 @@ namespace idTicketsInfrastructure.Test
             generateComments();
             sampleTickets = fakeTicketItem.GenerateBetween(10, 150);
             sampleExtraTicket = fakeTicketItem.Generate();
+            
 
             sampleUsers = fakeUserItem.GenerateBetween(1, 50);
             sampleComments = fakeCommentItem.GenerateBetween(1, 100);
@@ -44,30 +45,29 @@ namespace idTicketsInfrastructure.Test
             // set up the rules for ticket items
             Randomizer.Seed = _randomizerSeed;
             fakeTicketItem = new Faker<Ticket>()
-                .RuleFor(t => t.ticketId, f => f.Random.Int(1, 1000))
+                //.RuleFor(t => t.id, f => f.Random.Int(1, 1000))
                 .RuleFor(t => t.title, f => f.Lorem.Sentence(10))
                 .RuleFor(t => t.details, f => f.Lorem.Paragraph(1))
-                .RuleFor(t => t.ticketIssueDate, f => f.Date.Recent())
-                .RuleFor(t => t.ticketUpdateDate, f => f.Date.Recent( ).AddDays(2))
-                .RuleFor(t => t.requestorId, f => f.Random.Int(1, 30 ))
+                .RuleFor(t => t.creationDate, f => f.Date.Recent())
+                .RuleFor(t => t.updateDate, f => f.Date.Recent().AddDays(2))
+                .RuleFor(t => t.requestorId, f => f.Random.Int(1, 30))
                 .RuleFor(t => t.assigneeId, f => f.Random.Int(0, 30))
-                .RuleFor(t => t.ticketPriority, f => f.PickRandom<Priority>())
-                .RuleFor(t => t.ticketStatus, f => f.PickRandom<Status>())
-            ;
+                .RuleFor(t => t.priority, f => f.PickRandom(new List<string>() { "VERY LOW", "LOW", "MEDIUM", "HIGH", "VERY HIGH" }.AsEnumerable()))
+                .RuleFor(t => t.status, f => f.PickRandom(new List<string>() { "ISSUED", "IN PROGRESS", "IN REVIEW", "RESOLVED", "ARCHIVED" }.AsEnumerable()));
         }
 
         private static void generateUsers()
         {
             Randomizer.Seed = _randomizerSeed;
             fakeUserItem = new Faker<User>()
-                .RuleFor(u => u.userId, f => f.Random.Int(1, 200))
+                .RuleFor(u => u.id, f => f.Random.Int(1, 200))
                 .RuleFor(u => u.firstName, f => f.Name.FirstName())
                 .RuleFor(u => u.lastName, f => f.Name.LastName())
                 .RuleFor(u => u.email, (f, u) => f.Internet.ExampleEmail(u.firstName, u.lastName))
-                .RuleFor(u => u.dateCreated, (f) => f.Date.Past(5))
-                .RuleFor(u => u.dateUpdated, (f) => f.Date.Recent())
+                .RuleFor(u => u.creationDate, (f) => f.Date.Past(5))
+                .RuleFor(u => u.updateDate, (f) => f.Date.Recent())
                 .RuleFor(u => u.departmentId, (f) => f.Random.Int(1, 4))
-                .RuleFor(u => u.isITPersonnel, (f) => f.Random.Bool())
+                .RuleFor(u => u.isITStaff, (f) => f.Random.Bool())
                 .RuleFor(u => u.isSupervisor, (f) => f.Random.Bool())
             ;
 
@@ -77,10 +77,10 @@ namespace idTicketsInfrastructure.Test
         {
             Randomizer.Seed = _randomizerSeed;
             fakeCommentItem = new Faker<Comment>()
-                .RuleFor(c => c.commentId, f => f.Random.Int(1, 500))
+                .RuleFor(c => c.id, f => f.Random.Int(1, 500))
                 .RuleFor(c => c.ticketId, f => f.Random.Int(1, 1000))
                 .RuleFor(c => c.userId, f => f.Random.Int(1, 200))
-                .RuleFor(c => c.details, f => f.Lorem.Text())
+                .RuleFor(c => c.textContent, f => f.Lorem.Text())
                 ;
         }
 

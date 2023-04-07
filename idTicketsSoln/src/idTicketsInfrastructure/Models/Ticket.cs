@@ -8,43 +8,45 @@ using System.Threading.Tasks;
 
 namespace idTicketsInfrastructure.Models
 {
-  
+
+    [Table("tickets")]
     public class Ticket
     {
         // many users can have one ticket
-       
+
+        [Key]
         [Column("id")]
-        public int ticketId { get; set; }
+        public int id { get; set; }
 
 
         [Column("title")]
         public string? title { get; set; }
 
 
-        [Column("description")]
+        [Column("details")]
         public string? details{ get; set; }
 
 
-        [Column("requestor_id")]
+        [Column("requestorId")]
         public long requestorId { get; set; }
 
 
-        [Column("assignee_id")]
+        [Column("assigneeId")]
         public long assigneeId { get; set; }
 
 
         [Column("status")]
-        public Status ticketStatus { get; set; }
+        public string? status { get; set; }
 
         [Column("priority")]
-        public Priority ticketPriority { get; set; }
+        public string? priority { get; set; }
 
 
-        [Column("created_at")]
-        public DateTime? ticketIssueDate { get; set; }
+        [Column("creationDate")]
+        public DateTime? creationDate { get; set; }
 
 
-        [Column("updated_at")]
-        public DateTime? ticketUpdateDate { get; set; }
+        [Column("updateDate")]
+        public DateTime? updateDate { get; set; }
     }
 }

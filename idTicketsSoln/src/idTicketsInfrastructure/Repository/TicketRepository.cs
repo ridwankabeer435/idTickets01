@@ -7,16 +7,20 @@ using System.Threading.Tasks;
 using Dapper;
 using System.Net.Sockets;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using System.Drawing;
+using System.Diagnostics;
 
 namespace idTicketsInfrastructure.Repository
-{
+{   
     public class TicketRepository : IRepository<Ticket>
     {
         private readonly IDbConnectionFactory _dbConnectionFactory;
+        
 
-        public TicketRepository(IDbConnectionFactory dbConnectionFactory)
+        public TicketRepository(IDbConnectionFactory dbConnectionFactory )
         {
             _dbConnectionFactory = dbConnectionFactory;
+            
         }
 
         // on adding a new ticket, set the status to ISSUED
@@ -24,10 +28,18 @@ namespace idTicketsInfrastructure.Repository
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                const string sql = @"INSERT INTO tickets (title, description, priority, requestor_id, assignee_id,status, created_at, updated_at)
-                         VALUES (@title, @details, @requestor_id, @ticketStatus, @ticketPriority, @ticketIssueDate, @ticketUpdateDate)
-                         RETURNING id";
-                var rowsAffected = await connection.ExecuteAsync(sql, item);
+                connection.Open();
+
+                const string sql = @"INSERT INTO tickets ( requestorId, assigneeId, title, details, status, priority, creationDate, updateDate)
+                         VALUES (@requestorId, @assigneeId, @title, @details, @status, @priority, @creationDate, @updateDate)
+                         RETURNING id, title, details, requestorId, assigneeId, status, priority, creationDate, updateDate
+                         ";
+                var rowsAffected = 0;
+               
+               
+                rowsAffected = await connection.ExecuteAsync(sql, item);
+
+                
                 return rowsAffected > 0;
             }
          
@@ -37,7 +49,8 @@ namespace idTicketsInfrastructure.Repository
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                const string sql = @"DELETE FROM tickets WHERE id = @ticketId";
+                connection.Open();
+                const string sql = @"DELETE FROM tickets WHERE id = @id";
                 var rowsAffected = await connection.ExecuteAsync(sql, item);
                 return rowsAffected > 0;
             }
@@ -48,14 +61,24 @@ namespace idTicketsInfrastructure.Repository
         // need to get all tickets
         public async Task<List<Ticket>> getAll()
         {
-            throw new NotImplementedException();
+            using (var connection = _dbConnectionFactory.GetConnection())
+            {
+                connection.Open();
+                List<Ticket> ticketItems = (List<Ticket>)await connection.QueryAsync<Ticket>(@"SELECT * FROM tickets");
+                //ticketItem.ticketStatus = Enum.Parse<Status>(ticketItem.ticketStatus.ToString(), true);
+                return ticketItems;
+            }
         }
 
         public async Task<Ticket> getById(int id)
         {
+            Debug.WriteLine(id);
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                Ticket ticketItem = await connection.QueryFirstOrDefaultAsync<Ticket>("SELECT * FROM tickets WHERE id = @id", new { id });
+                connection.Open();
+                Ticket ticketItem = await connection.QueryFirstOrDefaultAsync<Ticket>(@"SELECT id, title, details, requestorId, assigneeId, 
+                                        status, priority, creationDate, updateDate FROM tickets WHERE id = @id", new { id });
+                //ticketItem.ticketStatus = Enum.Parse<Status>(ticketItem.ticketStatus.ToString(), true);
                 return ticketItem;
             }
 
@@ -66,10 +89,11 @@ namespace idTicketsInfrastructure.Repository
 
             using (var connection = _dbConnectionFactory.GetConnection())
             {
+                connection.Open();
                 const string sql = @"UPDATE tickets SET title = @title, 
-                        description = @details, priority = @ticketPriority, status = @ticketStatus, assignee_id = @assigneeId, 
-                        updated_at = @ticketUpdateDate WHERE id = @ticketId"; ;
-                var rowsAffected = await connection.ExecuteAsync(sql, item);
+                details = @details, priority = @priority, status = @status, assigneeId = @assigneeId, 
+                updateDate = @updateDate WHERE id = @id";
+                var rowsAffected = await connection.ExecuteAsync(sql, new { id = item.id, title = item.title, details = item.details, priority = item.priority, status = item.status, assigneeId = item.assigneeId, updateDate = DateTime.Now });
                 return rowsAffected > 0;
             }
         }

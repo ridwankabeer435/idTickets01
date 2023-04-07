@@ -41,11 +41,11 @@ namespace idTicketsInfrastructure.Repository
             }
         }
 
-        public async Task<User> getById(int id)
+        public async Task<User> getById(int itemId)
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                User userInfo = await connection.QueryFirstOrDefaultAsync<User>("SELECT * FROM user WHERE id = @id", new { id });
+                User userInfo = await connection.QueryFirstOrDefaultAsync<User>("SELECT * FROM user WHERE id = @itemId", new { itemId });
                 return userInfo;
             }
         }

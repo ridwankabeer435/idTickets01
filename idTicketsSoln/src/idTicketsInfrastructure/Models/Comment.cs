@@ -12,25 +12,25 @@ namespace idTicketsInfrastructure.Models
     public class Comment
     {
 
+        [Key]
         [Column("id")]
-        public int commentId { get; set; }
+        public int id { get; set; }
 
-      
         // comment description (in text)
         // commment may have file attachments
-        [Column("text_content")]
-        public string? details { get; set; }
+        [Column("textContent")]
+        public string? textContent { get; set; }
 
      
-        [Column("ticket_Id")]
+        [Column("ticketId")]
         public int ticketId { get; set; }
 
    
-        [Column("user_Id")]
+        [Column("userId")]
         public int userId { get; set; }
 
-        [Column("created_at")]
-        public DateTime? postingDate { get; set; }
+        [Column("creationDate")]
+        public DateTime? creationDate { get; set; }
 
 
     }

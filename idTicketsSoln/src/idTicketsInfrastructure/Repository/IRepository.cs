@@ -13,7 +13,7 @@ namespace idTicketsInfrastructure.Repository
 
 
         //public Task<List<T>> getAll();
-        public Task<T> getById(int id);
+        public Task<T> getById(int itemId);
 
         public Task<bool> addEntry(T item);
 

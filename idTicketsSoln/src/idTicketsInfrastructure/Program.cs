@@ -43,6 +43,8 @@ namespace idTicketsInfrastructure
         protected static void ConfigureServices()
         {
             _iservices.AddSingleton<IDbConnectionFactory, PostgreDbConnectionFactory>();
+            _iservices.AddSingleton<IDapperWrapper, DapperWrapper>();
+
         }
     }
 }

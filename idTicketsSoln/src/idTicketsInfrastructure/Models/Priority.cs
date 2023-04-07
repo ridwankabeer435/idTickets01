@@ -7,23 +7,14 @@ using System.Threading.Tasks;
 
 namespace idTicketsInfrastructure.Models
 {
-    public enum Priority
+    public static class Priority
     {
-        [Description("VERY LOW")]
-        Very_Low,
 
-        [Description("LOW")]
-        Low,
-
-        [Description("MEDIUM")]
-        Medium,
-
-        [Description("HIGH")]
-        High,
-
-        [Description("VERY HIGH")]
-        Very_High
-
+        public const string VERY_LOW = "VERY LOW";
+        public const string LOW = "LOW";
+        public const string MEDIUM = "MEDIUM";
+        public const string HIGH = "HIGH";
+        public const string VERY_HIGH = "VERY HIGH";
 
     }
 }

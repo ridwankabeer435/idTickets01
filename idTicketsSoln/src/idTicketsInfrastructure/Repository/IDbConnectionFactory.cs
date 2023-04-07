@@ -10,5 +10,6 @@ namespace idTicketsInfrastructure.Repository
     public interface IDbConnectionFactory
     {
         IDbConnection GetConnection();
+       
     }
 }
