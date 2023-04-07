@@ -200,15 +200,12 @@ namespace idTicketsInfrastructure.Test
             
             Ticket newTicketEntry = DataGenerator.sampleExtraTicket;
             _ticketRepository = new TicketRepository(_connectionFactory);
-
             List<Ticket> currentExistingTickets =  await _ticketRepository.getAll();
-          
             Ticket randomExistingTicket = currentExistingTickets[new Random().Next(0, currentExistingTickets.Count)];
-            
-            //bool addTicketRes = await _ticketRepository.addEntry(randomExistingTicket);
-            
+
             randomExistingTicket.details = newTicketEntry.details + "Additional Info";
             randomExistingTicket.status = Status.RESOLVED;
+            
             bool updateTicketRes = await _ticketRepository.updateEntry(randomExistingTicket);
             Assert.True(updateTicketRes);
             Ticket updatedTicket = await _ticketRepository.getById(randomExistingTicket.id);
