@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace idTicketsInfrastructure.Models
 {
+    [Table("users")]
 
     public class User
     {
@@ -40,7 +41,8 @@ namespace idTicketsInfrastructure.Models
         public bool isSupervisor { get; set; }
 
         [Column("departmentId")]
-        public long departmentId { get; set; }
+        public long? departmentId { get; set; }
+
 
 
     }

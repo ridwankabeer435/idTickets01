@@ -93,7 +93,7 @@ namespace idTicketsInfrastructure.Repository
                 const string sql = @"UPDATE tickets SET title = @title, 
                 details = @details, priority = @priority, status = @status, assigneeId = @assigneeId, 
                 updateDate = @updateDate WHERE id = @id";
-                var rowsAffected = await connection.ExecuteAsync(sql, new { id = item.id, title = item.title, details = item.details, priority = item.priority, status = item.status, assigneeId = item.assigneeId, updateDate = DateTime.Now });
+                var rowsAffected = await connection.ExecuteAsync(sql, item);
                 return rowsAffected > 0;
             }
         }

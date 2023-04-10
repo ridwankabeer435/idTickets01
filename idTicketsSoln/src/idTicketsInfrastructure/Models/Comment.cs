@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace idTicketsInfrastructure.Models
 {
-
+    [Table("comments")]
     public class Comment
     {
 
@@ -16,18 +16,19 @@ namespace idTicketsInfrastructure.Models
         [Column("id")]
         public int id { get; set; }
 
+
+        [Column("ticketId")]
+        public int ticketId { get; set; }
+
+
+        [Column("userId")]
+        public int userId { get; set; }
+
         // comment description (in text)
         // commment may have file attachments
         [Column("textContent")]
         public string? textContent { get; set; }
 
-     
-        [Column("ticketId")]
-        public int ticketId { get; set; }
-
-   
-        [Column("userId")]
-        public int userId { get; set; }
 
         [Column("creationDate")]
         public DateTime? creationDate { get; set; }

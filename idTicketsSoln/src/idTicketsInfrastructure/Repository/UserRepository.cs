@@ -22,9 +22,10 @@ namespace idTicketsInfrastructure.Repository
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                const string sql = @"INSERT INTO users (first_name, last_name, email, created_at, updated_at, is_it, is_supervisor, department_id)
-                         VALUES (@firstName, @lastName, @email, @dateCreated, @dateUpdated, @isITPersonnel, @isSupervisor, @departmentId)
-                         RETURNING id";
+                connection.Open();
+                const string sql = @"INSERT INTO users (firstName, lastName, email, creationDate, updateDate, isITStaff, isSupervisor, departmentId)
+                         VALUES (@firstname, @lastName, @email, @creationDate, @updateDate, @isITStaff, @isSupervisor, @departmentId)
+                         RETURNING id, firstName, lastName, email, creationDate, updateDate, isITStaff, isSupervisor, departmentId";
                 var rowsAffected = await connection.ExecuteAsync(sql, item);
                 return rowsAffected > 0;
             }
@@ -35,17 +36,31 @@ namespace idTicketsInfrastructure.Repository
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                const string sql = @"DELETE FROM users WHERE id = @userId";
+                connection.Open();
+                const string sql = @"DELETE FROM users WHERE id = @id";
                 var rowsAffected = await connection.ExecuteAsync(sql, item);
                 return rowsAffected > 0;
             }
         }
 
-        public async Task<User> getById(int itemId)
+        public async Task<List<User>> getAll()
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                User userInfo = await connection.QueryFirstOrDefaultAsync<User>("SELECT * FROM user WHERE id = @itemId", new { itemId });
+                connection.Open();
+                List<User> usersItems = (List<User>)await connection.QueryAsync<User>(@"SELECT * FROM users");
+                //ticketItem.ticketStatus = Enum.Parse<Status>(ticketItem.ticketStatus.ToString(), true);
+                return usersItems;
+            }
+        }
+
+        public async Task<User> getById(int id)
+        {
+            using (var connection = _dbConnectionFactory.GetConnection())
+            {
+                connection.Open();
+                User userInfo = await connection.QueryFirstOrDefaultAsync<User>(@"SELECT 
+                    id, firstName, lastName, email, creationDate, updateDate, isITStaff, isSupervisor, departmentId FROM users WHERE id = @id", new { id });
                 return userInfo;
             }
         }
@@ -55,11 +70,11 @@ namespace idTicketsInfrastructure.Repository
 
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                const string sql = @"UPDATE users SET  first_name = @firstName, 
-                        last_name = @lastName, email = @email, updated_at = @dateUpdated,
-                        is_it = @isITPersonnel, is_supervisor = @isSupervisor,
-                        department_id = @departmentId
-                        WHERE id = @userId";
+                const string sql = @"UPDATE users SET  firstName = @firstName, 
+                        lastName = @lastName, email = @email, updateDate = @updateDate,
+                        isITStaff = @isITStaff, isSupervisor = @isSupervisor,
+                        departmentId = @departmentId
+                        WHERE id = @id";
                 var rowsAffected = await connection.ExecuteAsync(sql, item);
                 return rowsAffected > 0;
             }

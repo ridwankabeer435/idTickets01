@@ -15,9 +15,6 @@ namespace idTicketsInfrastructure.Test
 {
     public class TicketRepositoryTest
     {
-        //private Mock<IDbConnection> _mockConnection;
-        private Mock<IDbConnectionFactory> _dbAccess;
-        private readonly Mock<IDbConnection> _mockDbConnection;
         private TicketRepository _ticketRepository;
         private readonly IDbConnectionFactory _connectionFactory;
 
@@ -39,7 +36,7 @@ namespace idTicketsInfrastructure.Test
             // test database
             
             var sqlCreateTables = @"
-                DROP TABLE IF EXISTS tickets, users, comments;
+                DROP TABLE IF EXISTS tickets, users, comments, departments;
 
                 CREATE TABLE IF NOT EXISTS users (
                     id SERIAL PRIMARY KEY,
@@ -54,15 +51,11 @@ namespace idTicketsInfrastructure.Test
                 );
 
 
-
-
                 CREATE TABLE IF NOT EXISTS departments(
                     id SERIAL PRIMARY KEY,
                     title VARCHAR(40) NOT NULL
     
                 );
-
-
 
                 CREATE TABLE IF NOT EXISTS tickets(
                     id SERIAL PRIMARY KEY,
@@ -175,10 +168,10 @@ namespace idTicketsInfrastructure.Test
             Ticket newTicketEntry = DataGenerator.sampleExtraTicket;
             _ticketRepository = new TicketRepository(_connectionFactory);
             List<Ticket> actualTickets = await _ticketRepository.getAll();
-            Debug.WriteLine(actualTickets.Count);
+
             bool addTicketRes = await _ticketRepository.addEntry(newTicketEntry);
             actualTickets = await _ticketRepository.getAll();
-            Debug.WriteLine(actualTickets.Count);
+            
             Assert.True(addTicketRes);
             
             var lastTicket = actualTickets.Last();
@@ -218,7 +211,26 @@ namespace idTicketsInfrastructure.Test
 
 
         }
-   
+
+
+        [Fact]
+        public async void deleteExistingTicket()
+        {
+            _ticketRepository = new TicketRepository(_connectionFactory);
+            List<Ticket> currentExistingTicktets = await _ticketRepository.getAll();
+            Ticket ticketToDelete = currentExistingTicktets.First();
+            // let's try removing the first entry
+            bool successfulDeletion = await _ticketRepository.deleteEntry(ticketToDelete);
+            Assert.True(successfulDeletion);
+
+            Ticket phantomTicketEntry = await _ticketRepository.getById(ticketToDelete.id);
+            // then try to look for the deleted item
+            Assert.Null(phantomTicketEntry);
+            dispose();
+
+        }
+
+
 
     }
 

@@ -14,6 +14,10 @@ namespace idTicketsInfrastructure.Test
     {
         public static List<Ticket> sampleTickets { get; }
         public static Ticket sampleExtraTicket { get; }
+        public static User sampleExtraUser { get; }
+        public static Comment sampleExtraComment { get; }
+
+
 
         public static List<User> sampleUsers { get; }
         public static List<Comment> sampleComments { get; }
@@ -37,6 +41,9 @@ namespace idTicketsInfrastructure.Test
             
 
             sampleUsers = fakeUserItem.GenerateBetween(1, 50);
+            sampleExtraUser = fakeUserItem.Generate();
+            sampleExtraComment = fakeCommentItem.Generate();
+
             sampleComments = fakeCommentItem.GenerateBetween(1, 100);
         }
 
@@ -60,7 +67,6 @@ namespace idTicketsInfrastructure.Test
         {
             Randomizer.Seed = _randomizerSeed;
             fakeUserItem = new Faker<User>()
-                .RuleFor(u => u.id, f => f.Random.Int(1, 200))
                 .RuleFor(u => u.firstName, f => f.Name.FirstName())
                 .RuleFor(u => u.lastName, f => f.Name.LastName())
                 .RuleFor(u => u.email, (f, u) => f.Internet.ExampleEmail(u.firstName, u.lastName))
@@ -77,10 +83,10 @@ namespace idTicketsInfrastructure.Test
         {
             Randomizer.Seed = _randomizerSeed;
             fakeCommentItem = new Faker<Comment>()
-                .RuleFor(c => c.id, f => f.Random.Int(1, 500))
-                .RuleFor(c => c.ticketId, f => f.Random.Int(1, 1000))
-                .RuleFor(c => c.userId, f => f.Random.Int(1, 200))
+                .RuleFor(c => c.ticketId, f => f.Random.Int(1, 20))
+                .RuleFor(c => c.userId, f => f.Random.Int(1, 15))
                 .RuleFor(c => c.textContent, f => f.Lorem.Text())
+                .RuleFor(t => t.creationDate, f => f.Date.Recent())
                 ;
         }
 

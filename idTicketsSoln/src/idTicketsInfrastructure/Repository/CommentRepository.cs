@@ -23,9 +23,10 @@ namespace idTicketsInfrastructure.Repository
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                const string sql = @"INSERT INTO comments (text_content, ticket_Id, user_Id, created_at)
-                         VALUES (@details, @ticketId, @userId, @postingDate)
-                         RETURNING id";
+                connection.Open();
+                const string sql = @"INSERT INTO comments (userId, ticketId, textContent, creationDate)
+                         VALUES (@userId, @ticketId, @textContent, @creationDate)
+                         RETURNING id, userId, ticketId, textContent, creationDate";
                 var rowsAffected = await connection.ExecuteAsync(sql, item);
                 return rowsAffected > 0;
             }
@@ -36,17 +37,31 @@ namespace idTicketsInfrastructure.Repository
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                const string sql = @"DELETE FROM comments WHERE id = @commentId";
+                connection.Open();
+                const string sql = @"DELETE FROM comments WHERE id = @id";
                 var rowsAffected = await connection.ExecuteAsync(sql, item);
                 return rowsAffected > 0;
             }
         }
 
-        public async Task<Comment> getById(int itemId)
+        public async Task<List<Comment>> getAll()
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                Comment commenttItem = await connection.QueryFirstOrDefaultAsync<Comment>("SELECT * FROM comments WHERE id = @itemId", new { itemId });
+                connection.Open();
+                List<Comment> commentsList = (List<Comment>)await connection.QueryAsync<Comment>(@"SELECT * FROM comments");
+                //ticketItem.ticketStatus = Enum.Parse<Status>(ticketItem.ticketStatus.ToString(), true);
+                return commentsList;
+            }
+        }
+
+        public async Task<Comment> getById(int id)
+        {
+            using (var connection = _dbConnectionFactory.GetConnection())
+            {
+                connection.Open();
+                Comment commenttItem = await connection.QueryFirstOrDefaultAsync<Comment>(@"SELECT 
+                       id, userId, ticketId, textContent, creationDate FROM comments WHERE id = @id", new { id });
                 return commenttItem;
             }
         }
@@ -56,8 +71,9 @@ namespace idTicketsInfrastructure.Repository
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                const string sql = @"UPDATE comments SET text_content = @details, 
-                                                updated_at = @ticketUpdateDate WHERE id = @commentId"; ;
+                connection.Open();
+                const string sql = @"UPDATE comments SET textContent = @textContent
+                                               WHERE id = @id"; ;
                 var rowsAffected = await connection.ExecuteAsync(sql, item);
                 return rowsAffected > 0;
             }
@@ -67,11 +83,12 @@ namespace idTicketsInfrastructure.Repository
 
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                List<Comment> ticketComments = (List<Comment>) await connection.QueryAsync<Comment>("SELECT * FROM comments WHERE id = @ticketId", new { ticketId });
+                connection.Open();
+                List<Comment> ticketComments = (List<Comment>) await connection.QueryAsync<Comment>("SELECT * FROM comments WHERE id = @id", new { ticketId });
                 return ticketComments;
             }
             
         }
-        // additional methods include obtaining comments by ticket id
+    
     }
 }
