@@ -7,6 +7,7 @@ node_modules/
 # .net object files and g
 obj/
 bin/
+bin/Debug/
 TestStore/
-
+.vs/
 *.suo

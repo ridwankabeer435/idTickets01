@@ -8,29 +8,30 @@ using System.Threading.Tasks;
 
 namespace idTicketsInfrastructure.Models
 {
-    [Table("Comments")]
+    [Table("comments")]
     public class Comment
     {
-        // id
+
         [Key]
-        [Column("Id")]
-        public int commentId { get; set; }
+        [Column("id")]
+        public int id { get; set; }
 
-        // ticket number -- this will be a foreign key
 
-        // comment description
-        [Column("Details")]
-        public string? details { get; set; }
-
-        [ForeignKey("Tickets")]
-        [Column("Ticket_Id")]
+        [Column("ticketId")]
         public int ticketId { get; set; }
-        public Ticket? ticketInfo { get; set; }
 
-        [ForeignKey("Users")]
-        [Column("User_Id")]
+
+        [Column("userId")]
         public int userId { get; set; }
-        public User? userInfo { get; set; }
+
+        // comment description (in text)
+        // commment may have file attachments
+        [Column("textContent")]
+        public string? textContent { get; set; }
+
+
+        [Column("creationDate")]
+        public DateTime? creationDate { get; set; }
 
 
     }

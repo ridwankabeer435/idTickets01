@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using idTicketsInfrastructure.Repository;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace idTicketsInfrastructure
         public static void Main(String[] args)
         {
             GetAppSettingsFile();
+            ConfigureServices();
         }
 
         // set up applicaition.json file in the current project to identify configuration data
@@ -36,6 +38,13 @@ namespace idTicketsInfrastructure
             //string connectionString = _iconfiguration.GetConnectionString("TicketsDbConnectionString");
 
             // upon starting, the class library should be able to connect to the database
+        }
+
+        protected static void ConfigureServices()
+        {
+            _iservices.AddSingleton<IDbConnectionFactory, PostgreDbConnectionFactory>();
+            _iservices.AddSingleton<IDapperWrapper, DapperWrapper>();
+
         }
     }
 }

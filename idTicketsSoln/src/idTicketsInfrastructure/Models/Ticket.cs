@@ -8,46 +8,45 @@ using System.Threading.Tasks;
 
 namespace idTicketsInfrastructure.Models
 {
-    [Table("Tickets")]
+
+    [Table("tickets")]
     public class Ticket
     {
         // many users can have one ticket
+
         [Key]
-        [Column("Id")]
-        public int ticketId { get; set; }
-        
-        [Column("Number")]
-        public int ticketNumber { get; set; } // this shall be generated in a later method
+        [Column("id")]
+        public int id { get; set; }
 
-        [Column("Description")]
-        public string? description { get; set; }
 
-        [Column("Related_Tickets")]
-        public List<int>? relatedTickets { get; set; } // really this should be stringified 
+        [Column("title")]
+        public string? title { get; set; }
 
-        [ForeignKey("Users")]
-        [Column("Issuer_Id")]
-        public int issuerId { get; set; }
 
-        public User? issuerDetails { get; set; }
+        [Column("details")]
+        public string? details{ get; set; }
 
-        [Column("Assignee_Id")]
-        public int assigneeId { get; set; }
-        public User? assigneeDetails { get; set; }
 
-        [Column("Status")]
-        public string? ticketStatus { get; set; }
+        [Column("requestorId")]
+        public long requestorId { get; set; }
 
-        [Column("Priority")]
-        public string? ticketPriority { get; set; }
 
-        [Column("Blocked")]
-        public bool isBlocked { get ; set; }
+        [Column("assigneeId")]
+        public long assigneeId { get; set; }
 
-        [Column("Issue_Date")]
-        public DateTime? ticketIssueDate { get; set; }
 
-        [Column("Update_Date")]
-        public DateTime? ticketUpdateDate { get; set; }
+        [Column("status")]
+        public string? status { get; set; }
+
+        [Column("priority")]
+        public string? priority { get; set; }
+
+
+        [Column("creationDate")]
+        public DateTime? creationDate { get; set; }
+
+
+        [Column("updateDate")]
+        public DateTime? updateDate { get; set; }
     }
 }
