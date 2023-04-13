@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using System.Drawing;
 using System.Diagnostics;
+using System.Xml.Linq;
 
 namespace idTicketsInfrastructure.Repository
 {   
@@ -35,7 +36,7 @@ namespace idTicketsInfrastructure.Repository
                          VALUES (@requestorId, @assigneeId, @title, @details, @status, @priority, @creationDate, @updateDate)
                          RETURNING id, title, details, requestorId, assigneeId, status, priority, creationDate, updateDate
                          ";
-                var rowsAffected = 0;
+                var rowsAffected = 0; 
                
                
                 rowsAffected = await connection.ExecuteAsync(sql, item);
@@ -73,7 +74,6 @@ namespace idTicketsInfrastructure.Repository
 
         public async Task<Ticket> getById(int id)
         {
-            Debug.WriteLine(id);
             using (var connection = _dbConnectionFactory.GetConnection())
             {
                 connection.Open();
@@ -84,6 +84,45 @@ namespace idTicketsInfrastructure.Repository
             }
 
         }
+
+        public async Task<Ticket> getByIdWithComments(int id)
+        {
+            using (var connection = _dbConnectionFactory.GetConnection())
+            {
+                connection.Open();
+                // first get the ticket object
+                // then get the requestor info
+                // then get the assignee info if assignee id is not null
+                Ticket ticketItem = await connection.QueryFirstOrDefaultAsync<Ticket>(@"SELECT id, title, details, requestorId, assigneeId, 
+                                        status, priority, creationDate, updateDate FROM tickets WHERE id = @id", new { id });
+
+                if (ticketItem != null && ticketItem.id > 0)
+                {
+                    // get requestor info
+                    User requestorDetails = await connection.QueryFirstOrDefaultAsync<User>(@"SELECT 
+                    id, firstName, lastName, email, creationDate, updateDate, isITStaff, isSupervisor, departmentId FROM users WHERE id = @id", new { id = ticketItem.requestorId });
+                    ticketItem.requestorInfo = requestorDetails;
+
+                    // get assignee info if available
+                    if (ticketItem.assigneeId > 0)
+                    {
+                        User assigneeDetails = await connection.QueryFirstOrDefaultAsync<User>(@"SELECT 
+                    id, firstName, lastName, email, creationDate, updateDate, isITStaff, isSupervisor, departmentId FROM users WHERE id = @id", new { id = ticketItem.requestorId });
+                        ticketItem.assigneeInfo = assigneeDetails;
+                    }
+
+                    // get comments if there are any
+                    List<Comment> comments = (List<Comment>)await connection.QueryAsync<Comment>(@"SELECT * FROM comments WHERE ticketId = @tikcetId", new { tikcetId = ticketItem.id });
+                    ticketItem.comments = comments;
+                    return ticketItem;
+
+                }
+                return ticketItem;
+
+
+            }
+        }
+
 
         public async Task<bool> updateEntry(Ticket item)
         {

@@ -30,6 +30,7 @@ namespace idTicketsInfrastructure.Test
             _connectionFactory = _fixture.DbConnectionFactory;
             _connection = _connectionFactory.GetConnection();
             
+            
         }
 
     
@@ -84,7 +85,7 @@ namespace idTicketsInfrastructure.Test
         [Fact]
         public async void addNewTicket()
         {
-            Ticket newTicketEntry = DataGenerator.sampleExtraTicket;
+            Ticket newTicketEntry = _fixture.DataGenerator.sampleExtraTicket;
             _ticketRepository = new TicketRepository(_connectionFactory);
             List<Ticket> actualTickets = await _ticketRepository.getAll();
 
@@ -110,7 +111,7 @@ namespace idTicketsInfrastructure.Test
         public async void updateExistingTicket()
         {
             
-            Ticket newTicketEntry = DataGenerator.sampleExtraTicket;
+            Ticket newTicketEntry = _fixture.   DataGenerator.sampleExtraTicket;
             _ticketRepository = new TicketRepository(_connectionFactory);
             List<Ticket> currentExistingTickets =  await _ticketRepository.getAll();
             Ticket randomExistingTicket = currentExistingTickets[new Random().Next(0, currentExistingTickets.Count)];
@@ -149,25 +150,79 @@ namespace idTicketsInfrastructure.Test
 
         }
 
-       /*
-        public void Dispose()
+        [Fact]
+        public async void getTicketWithImportantUsersAndComments()
         {
-            // clean up all of the test tables cases
-            if (_connection.State != ConnectionState.Open)
+            // arrange
+            _ticketRepository = new TicketRepository(_connectionFactory);
+            
+            // Act
+            var actualTicket = await _ticketRepository.getByIdWithComments(5);
+                            
+            // assert
+            Assert.NotNull(actualTicket);
+            Assert.NotNull(actualTicket.requestorInfo);
+            if(actualTicket.assigneeId > 0)
             {
-                //_connection = DbConnectionFactory.GetConnection();
-                _connection.Open();
+                Assert.NotNull(actualTicket.assigneeInfo);
+            }
+            // now comments may or may not be null
+            dispose();
+
+
+        }
+
+
+        [Fact]
+        public async void getTicketWithCommentNoRequestorOrAssigneeNeeded()
+        {
+            // arrange
+
+            // add a comment with corresponding tickek id
+            List<Ticket> currentExistingTickets = _fixture.DataGenerator.sampleTickets;
+            int randomTicketId = 15;
+            Comment commentToAdd = _fixture.DataGenerator.sampleExtraComment;
+            commentToAdd.ticketId = randomTicketId;
+            CommentRepository _commentsRepository = new CommentRepository(_connectionFactory);
+            bool commentAddSuccess = await _commentsRepository.addEntry(commentToAdd);
+
+            _ticketRepository = new TicketRepository(_connectionFactory);
+
+            // act
+            if (commentAddSuccess)
+            {
+                // get the ticket item and check if the comment list is not null
+                Ticket testTicketItem = await _ticketRepository.getByIdWithComments(randomTicketId);
+                Assert.NotNull(testTicketItem.comments);
+                Assert.NotEmpty(testTicketItem.comments);
+                Assert.True(testTicketItem.comments.Last().ticketId == commentToAdd.ticketId);
+                Assert.True(testTicketItem.comments.Last().textContent == commentToAdd.textContent);
 
             }
-            string cleanupQuery = @"DELETE FROM departments, users, tickets, comments;
-                    DROP TABLE IF EXISTS tickets, comments, users, departments;
-                    ";
+            dispose();
+            
 
-
-            _connection.ExecuteAsync(cleanupQuery);
-            _connection.Close();
         }
-       */
+
+        /*
+         public void Dispose()
+         {
+             // clean up all of the test tables cases
+             if (_connection.State != ConnectionState.Open)
+             {
+                 //_connection = DbConnectionFactory.GetConnection();
+                 _connection.Open();
+
+             }
+             string cleanupQuery = @"DELETE FROM departments, users, tickets, comments;
+                     DROP TABLE IF EXISTS tickets, comments, users, departments;
+                     ";
+
+
+             _connection.ExecuteAsync(cleanupQuery);
+             _connection.Close();
+         }
+        */
     }
 
 }

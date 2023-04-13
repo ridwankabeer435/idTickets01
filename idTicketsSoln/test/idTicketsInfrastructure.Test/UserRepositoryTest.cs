@@ -61,7 +61,7 @@ namespace idTicketsInfrastructure.Test
         [Fact]
         public async void addNewValidUser()
         {
-            User newUser = DataGenerator.sampleExtraUser;
+            User newUser = _fixture.DataGenerator.sampleExtraUser;
             _userRepository = new UserRepository(_connectionFactory);
 
             bool insertionResult =  await _userRepository.addEntry(newUser);

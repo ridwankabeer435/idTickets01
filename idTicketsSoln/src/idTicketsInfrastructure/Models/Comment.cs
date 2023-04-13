@@ -23,6 +23,7 @@ namespace idTicketsInfrastructure.Models
 
         [Column("userId")]
         public int userId { get; set; }
+        public User? userInfo { get; set; }
 
         // comment description (in text)
         // commment may have file attachments
