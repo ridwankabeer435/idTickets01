@@ -10,44 +10,44 @@ using System.Threading.Tasks;
 
 namespace idTicketsInfrastructure.Test
 {
-    internal static class DataGenerator
+    public class DataGenerator
     {
-        public static List<Ticket> sampleTickets { get; }
-        public static Ticket sampleExtraTicket { get; }
-        public static User sampleExtraUser { get; }
-        public static Comment sampleExtraComment { get; }
+        public  List<Ticket> sampleTickets { get; }
+        public  Ticket sampleExtraTicket { get; }
+        public  User sampleExtraUser { get; }
+        public  Comment sampleExtraComment { get; }
 
 
 
-        public static List<User> sampleUsers { get; }
-        public static List<Comment> sampleComments { get; }
+        public  List<User> sampleUsers { get; }
+        public  List<Comment> sampleComments { get; }
 
-        private static Random _randomizerSeed { get; }
+        private  Random _randomizerSeed { get; }
 
-        private static Faker<Ticket> fakeTicketItem;
-        private static Faker<User> fakeUserItem;
-        private static Faker<Comment> fakeCommentItem;
+        private  Faker<Ticket> fakeTicketItem;
+        private  Faker<User> fakeUserItem;
+        private  Faker<Comment> fakeCommentItem;
 
 
-        static DataGenerator()
+        public DataGenerator()
         {
             _randomizerSeed = new Random(123);
             
             generateTickets();
             generateUsers();
             generateComments();
-            sampleTickets = fakeTicketItem.GenerateBetween(10, 150);
+            sampleTickets = fakeTicketItem.Generate(150);
             sampleExtraTicket = fakeTicketItem.Generate();
             
 
-            sampleUsers = fakeUserItem.GenerateBetween(1, 50);
+            sampleUsers = fakeUserItem.Generate(50);
             sampleExtraUser = fakeUserItem.Generate();
             sampleExtraComment = fakeCommentItem.Generate();
 
-            sampleComments = fakeCommentItem.GenerateBetween(1, 100);
+            sampleComments = fakeCommentItem.Generate(100);
         }
 
-        private static void generateTickets()
+        private  void generateTickets()
         {
             // set up the rules for ticket items
             Randomizer.Seed = _randomizerSeed;
@@ -63,7 +63,7 @@ namespace idTicketsInfrastructure.Test
                 .RuleFor(t => t.status, f => f.PickRandom(new List<string>() { "ISSUED", "IN PROGRESS", "IN REVIEW", "RESOLVED", "ARCHIVED" }.AsEnumerable()));
         }
 
-        private static void generateUsers()
+        private void generateUsers()
         {
             Randomizer.Seed = _randomizerSeed;
             fakeUserItem = new Faker<User>()
@@ -79,7 +79,7 @@ namespace idTicketsInfrastructure.Test
 
         }
 
-        private static void generateComments()
+        private void generateComments()
         {
             Randomizer.Seed = _randomizerSeed;
             fakeCommentItem = new Faker<Comment>()

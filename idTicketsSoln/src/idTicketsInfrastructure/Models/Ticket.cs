@@ -29,10 +29,12 @@ namespace idTicketsInfrastructure.Models
 
         [Column("requestorId")]
         public long requestorId { get; set; }
+        public User? requestorInfo { get; set; }
 
 
         [Column("assigneeId")]
         public long assigneeId { get; set; }
+        public User? assigneeInfo { get; set; }
 
 
         [Column("status")]
@@ -48,5 +50,7 @@ namespace idTicketsInfrastructure.Models
 
         [Column("updateDate")]
         public DateTime? updateDate { get; set; }
+
+        public List<Comment>? comments { get; set; }
     }
 }

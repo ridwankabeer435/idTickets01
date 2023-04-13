@@ -66,6 +66,26 @@ namespace idTicketsInfrastructure.Repository
             }
         }
 
+        public async Task<Comment> getByIdWithUserInfo(int id)
+        {
+            using (var connection = _dbConnectionFactory.GetConnection())
+            {
+                connection.Open();
+                Comment commentItem = await connection.QueryFirstOrDefaultAsync<Comment>(@"SELECT 
+                       id, userId, ticketId, textContent, creationDate FROM comments WHERE id = @id", new { id });
+
+                if(commentItem != null && commentItem.id > 0 && commentItem.userId > 0)
+                {
+                    commentItem.userInfo = await connection.QueryFirstOrDefaultAsync<User>(@"SELECT 
+                    id, firstName, lastName, email, creationDate, updateDate, isITStaff, isSupervisor, departmentId FROM users WHERE id = @id", new { id = commentItem.userId});
+                    return commentItem;
+                }
+
+                return commentItem;
+            }
+        }
+
+
         // needed for making edits by the user
         public async Task<bool> updateEntry(Comment item)
         {
@@ -79,12 +99,12 @@ namespace idTicketsInfrastructure.Repository
             }
         }
 
-        public async Task<List<Comment>> getCommentsByTickets(long ticketId) {
+        public async Task<List<Comment>> getByTicketId(long ticketId) {
 
             using (var connection = _dbConnectionFactory.GetConnection())
             {
                 connection.Open();
-                List<Comment> ticketComments = (List<Comment>) await connection.QueryAsync<Comment>("SELECT * FROM comments WHERE id = @id", new { ticketId });
+                List<Comment> ticketComments = (List<Comment>) await connection.QueryAsync<Comment>("SELECT * FROM comments WHERE id = @id", new { id = ticketId });
                 return ticketComments;
             }
             

@@ -18,7 +18,7 @@ namespace idTicketsInfrastructure.Test
             _connectionString= "Server=localhost;Database=id_tickets_01_test;port=5432;User Id=postgres;Password=ABAJwatch735db;Pooling=true;MinPoolSize=1;MaxPoolSize=20;"; ;
         }
 
-        public IDbConnection GetConnection()
+        public IDbConnection GetConnection()    
         {
             return new NpgsqlConnection(_connectionString);
         }

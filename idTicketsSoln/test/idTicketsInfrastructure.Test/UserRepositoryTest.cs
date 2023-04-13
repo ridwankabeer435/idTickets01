@@ -11,80 +11,22 @@ using System.Threading.Tasks;
 
 namespace idTicketsInfrastructure.Test
 {
+    [Collection("DbTestCollection")]
     public class UserRepositoryTest
     {
-        private UserRepository _userRepository;
+        private UserRepository? _userRepository;
+        private readonly TestDbFixture _fixture;
+
         private readonly IDbConnectionFactory _connectionFactory;
 
         private readonly IDbConnection _connection;
 
-        public UserRepositoryTest() {
+        public UserRepositoryTest(TestDbFixture fixture) {
 
-            _connectionFactory = new TestDbConnectionFactory();
-            _connection = _connectionFactory.GetConnection();
-            if (_connection.State != ConnectionState.Open)
-            {
-                _connection.Open();
-                // then run the test db schema
-            }
+            _fixture = fixture;
 
-            string sqlCreateUsersTable = @"
-                
-                DROP TABLE IF EXISTS tickets, users, comments, departments;
-
-                CREATE TABLE IF NOT EXISTS users (
-                    id SERIAL PRIMARY KEY,
-                    firstName VARCHAR(75) NOT NULL,
-                    lastName VARCHAR(50) NOT NULL,
-                    email VARCHAR(255) NOT NULL,
-                    creationDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    updateDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    isITStaff bool NOT NULL DEFAULT FALSE,
-                    isSupervisor bool NOT NULL DEFAULT FALSE,
-                    departmentId integer NULL
-                );
-
-
-                CREATE TABLE IF NOT EXISTS departments(
-                    id SERIAL PRIMARY KEY,
-                    title VARCHAR(40) NOT NULL
-    
-                );
-                ";
-            _connection.Execute(sqlCreateUsersTable);
-
-            string dataInsertionQueries = @"
-                INSERT INTO departments (title) 
-                VALUES 
-                    ('Sales'),
-                    ('Marketing'),
-                    ('Finance'),
-                    ('IT'),
-                    ('Human Resources');
-
-
-                INSERT INTO users (firstName, lastName, email, creationDate, updateDate, isITStaff, isSupervisor, departmentId)
-                VALUES
-                    ('John', 'Doe', 'john.doe@example.com', '2022-03-01 12:00:00', '2022-03-01 12:00:00', true, false, 1),
-                    ('Jane', 'Doe', 'jane.doe@example.com', '2022-03-01 13:00:00', '2022-03-01 13:00:00', false, true, 2),
-                    ('Sara', 'Smith', 'sara.smith@example.com', '2022-03-02 14:00:00', '2022-03-02 14:00:00', false, false, 1),
-                    ('Ahmed', 'Ali', 'ahmed.ali@example.com', '2022-03-02 15:00:00', '2022-03-02 15:00:00', false, false, 3),
-                    ('Juan', 'Garcia', 'juan.garcia@example.com', '2022-03-03 16:00:00', '2022-03-03 16:00:00', false, false, 2),
-                    ('Marie', 'Dupont', 'marie.dupont@example.com', '2022-03-03 17:00:00', '2022-03-03 17:00:00', false, false, 4),
-                    ('Jin-Soo', 'Kim', 'jin-soo.kim@example.com', '2022-03-04 18:00:00', '2022-03-04 18:00:00', false, false, 3),
-                    ('Emil', 'Andersson', 'emil.andersson@example.com', '2022-03-04 19:00:00', '2022-03-04 19:00:00', true, false, 1),
-                    ('Maria', 'Gonzalez', 'maria.gonzalez@example.com', '2022-03-05 20:00:00', '2022-03-05 20:00:00', false, false, 2),
-                    ('Svetlana', 'Ivanova', 'svetlana.ivanova@example.com', '2022-03-05 21:00:00', '2022-03-05 21:00:00', false, false, 4),
-                    ('Pablo', 'Rodriguez', 'pablo.rodriguez@example.com', '2022-03-06 22:00:00', '2022-03-06 22:00:00', false, true, 3),
-                    ('Hiroshi', 'Yamamoto', 'hiroshi.yamamoto@example.com', '2022-03-06 23:00:00', '2022-03-06 23:00:00', false, false, 1),
-                    ('Li', 'Wang', 'li.wang@example.com', '2022-03-07 00:00:00', '2022-03-07 00:00:00', true, false, 2);
-                
-            ";
-
-
-            
-            _connection.Execute(dataInsertionQueries);
-            _connection.Close();
+            _connectionFactory = _fixture.DbConnectionFactory;
+            _connection = _connectionFactory.GetConnection();      
         }
 
         private void dispose()
@@ -95,14 +37,13 @@ namespace idTicketsInfrastructure.Test
                 // then run the test db schema
             }
 
-            string cleanUpSQL = @"DELETE FROM users, departments";
+            string cleanUpSQL = @"DELETE FROM departments, users, tickets, comments;
+                    DROP TABLE IF EXISTS tickets, comments, users, departments;";
             _connection.ExecuteAsync(cleanUpSQL);
-            _connection.Close();
-
-
+            //_connection.Close();
         }
 
-        
+
         [Fact]
         public async void getValidUserById()
         {
@@ -110,17 +51,17 @@ namespace idTicketsInfrastructure.Test
             _userRepository = new UserRepository(_connectionFactory);
 
             // Act
-            var actualUser = await _userRepository.getById(1);
+            var actualUser = await _userRepository.getById(5);
 
             Assert.NotNull(actualUser);
-            Assert.Equal(1, actualUser.id);
+            Assert.Equal(5, actualUser.id);
             dispose();
         }
 
         [Fact]
         public async void addNewValidUser()
         {
-            User newUser = DataGenerator.sampleExtraUser;
+            User newUser = _fixture.DataGenerator.sampleExtraUser;
             _userRepository = new UserRepository(_connectionFactory);
 
             bool insertionResult =  await _userRepository.addEntry(newUser);

@@ -41,7 +41,7 @@ namespace idTicketsInfrastructure.Models
         public bool isSupervisor { get; set; }
 
         [Column("departmentId")]
-        public long? departmentId { get; set; }
+        public int? departmentId { get; set; }
 
 
 
