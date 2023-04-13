@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace idTicketsInfrastructure.Test
 {
-    internal static class DataGenerator
+    public class DataGenerator
     {
         public static List<Ticket> sampleTickets { get; }
         public static Ticket sampleExtraTicket { get; }
@@ -40,7 +40,7 @@ namespace idTicketsInfrastructure.Test
             sampleExtraTicket = fakeTicketItem.Generate();
             
 
-            sampleUsers = fakeUserItem.GenerateBetween(1, 50);
+            sampleUsers = fakeUserItem.Generate(50);
             sampleExtraUser = fakeUserItem.Generate();
             sampleExtraComment = fakeCommentItem.Generate();
 

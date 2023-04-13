@@ -12,6 +12,7 @@ using System.Diagnostics;
 
 namespace idTicketsInfrastructure.Repository
 {   
+
     public class TicketRepository : IRepository<Ticket>
     {
         private readonly IDbConnectionFactory _dbConnectionFactory;
